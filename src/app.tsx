@@ -26,7 +26,6 @@ export function CampApp({ user }: { user: User }) {
   }
 
   const owned = data.accommodations.filter((item) => item.ownerUid === user.uid);
-  const sleeping = data.accommodations.find((item) => item.occupantUids.includes(user.uid));
   const admin = data.person?.admin === true;
 
   return (
@@ -62,12 +61,6 @@ export function CampApp({ user }: { user: User }) {
           </div>
         )}
       </header>
-      <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Stat label="Ticket" value={data.person?.hasTicket ? "Yes" : "No"} />
-        <Stat label="Sleeping in" value={sleeping?.label ?? "—"} />
-        <Stat label="Vehicles" value={String(data.vehicles.length)} />
-        <Stat label="Could lead" value={String(data.person?.leadRoles.length ?? 0)} />
-      </dl>
       {page === "appointments" && admin ? (
         <AdminPage />
       ) : (
@@ -90,15 +83,6 @@ export function CampApp({ user }: { user: User }) {
         </div>
       )}
     </main>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt className="text-sm text-muted">{label}</dt>
-      <dd className="text-lg font-semibold">{value}</dd>
-    </div>
   );
 }
 

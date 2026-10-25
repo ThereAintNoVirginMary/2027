@@ -3,13 +3,13 @@ import { db } from "./firebase";
 
 export const LEAD_ROLES = [
   ["floorplan", "Floorplan"],
-  ["container", "Container"],
+  ["container", "Container shipping coordination"],
   ["procurement", "Procurement"],
-  ["build", "Build"],
-  ["strike", "Strike"],
+  ["build", "Build coordination"],
+  ["strike", "Strike coordination"],
   ["art", "Art"],
   ["artcar", "Art car"],
-  ["burlesque", "Burlesque"],
+  ["burlesque", "Burlesque show"],
   ["bar", "Bar"],
   ["sound", "Sound"],
   ["live-music", "Live music"],
@@ -17,11 +17,11 @@ export const LEAD_ROLES = [
 
 export const HELP_ROLES = [
   ["floorplan", "Floorplan"],
-  ["container", "Container"],
+  ["container", "Container shipping coordination"],
   ["procurement", "Procurement"],
   ["art", "Art"],
   ["artcar", "Art car"],
-  ["burlesque", "Burlesque"],
+  ["burlesque", "Burlesque show"],
   ["bar", "Bar"],
   ["sound", "Sound"],
   ["live-music", "Live music"],
