@@ -97,7 +97,7 @@ export function PersonSection({
         </Field>
       </div>
       <ToggleRow
-        title="I have a ticket"
+        title="I have a ticket. Check this once you have the ticket."
         hint="The source of the ticket is not recorded."
         checked={draft.hasTicket}
         onChange={(hasTicket) => {

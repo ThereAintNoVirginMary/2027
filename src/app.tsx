@@ -65,6 +65,7 @@ export function CampApp({ user }: { user: User }) {
         <AdminPage />
       ) : (
         <div className="flex flex-col gap-10">
+          <p className="text-sm text-muted">Note: You can always come back and edit this later.</p>
           <PersonSection uid={user.uid} email={email} person={data.person} />
           <AccommodationsSection
             uid={user.uid}
