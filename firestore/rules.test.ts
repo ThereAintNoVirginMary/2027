@@ -11,7 +11,7 @@ let env: RulesTestEnvironment;
 
 beforeAll(async () => {
   env = await initializeTestEnvironment({
-    projectId: "there-aint-no-virgin-mary-2027",
+    projectId: "thereaintnovirginmary2027",
     firestore: {
       rules: readFileSync("firestore.rules", "utf8"),
       host: "127.0.0.1",
