@@ -1,0 +1,20 @@
+---
+description: Squash merge and conventional pull request titles
+alwaysApply: true
+---
+
+# Commits
+
+Pull requests squash onto `main`. The pull request title is the commit message.
+
+Types: `feat`, `fix`, `docs`, `chore`, `refactor`.
+
+```
+feat: add login page
+fix: prevent duplicate vehicle rows
+docs: explain RV vehicle pass rule
+chore: upgrade vite
+refactor: split accommodations into folder
+```
+
+One behavior per pull request. CI must be green before merge. Agent-instruction changes ship in the repository — never keep rules only on the local machine.

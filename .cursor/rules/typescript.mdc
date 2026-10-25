@@ -1,0 +1,25 @@
+---
+description: TypeScript toolchain commands and standards
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: false
+---
+
+# TypeScript
+
+Toolchain commands:
+
+- `npm run lint` — ESLint
+- `npm run format:check` — Prettier (read-only check)
+- `npm run format` — Prettier (write)
+- `npm run test` — Vitest unit tests plus Firestore emulator tests
+- `npm run build` — Vite production build
+
+CI runs `lint`, `test`, and `build` as separate jobs. A pull request cannot merge while any job is red.
+
+Code standards:
+
+- `strict: true` in `tsconfig.json`. No `any` unless the only alternative is a cast that lies.
+- Prefer `unknown` over `any` for data coming from Firestore or user input; narrow the type explicitly.
+- One module exports one responsibility. When a file passes about 200 lines or takes a second responsibility, split it into a folder with an `index.ts` that only re-exports. See the `file-structure` rule for the prescribed modules and the split pattern.
+- Types and interfaces that are shared between two or more modules live in their folder's `types.ts`, not in `index.ts`.
+- Tests sit beside the code they cover, named `*.test.ts`.

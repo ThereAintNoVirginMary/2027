@@ -1,0 +1,38 @@
+---
+description: Split a file that outgrows one responsibility into a folder
+alwaysApply: true
+---
+
+# Split large files
+
+One responsibility per file. Start from these modules:
+
+- `src/main.ts` wires the page
+- `src/firebase.ts` sets up the client
+- `src/auth.ts` signs in and requires a verified email
+- `src/person.ts` stores legal name, WhatsApp, email, emergency contact, and the ticket checkbox
+- `src/accommodations.ts` stores RV, trailer, yurt, and shiftpod rows, with length, width, and occupants
+- `src/vehicles.ts` stores driven vehicles, with length, width, and a vehicle pass
+- `src/availability.ts` stores early build and late teardown
+- `src/roles.ts` stores willingness to lead and to contribute
+- `src/admin.ts` stores the one appointed lead per role
+
+An RV's vehicle pass stays on the accommodation. A trailer has none. The tow vehicle is a vehicle. Occupants are registered accounts.
+
+Split a file in the same change when it takes a second responsibility or passes about 200 lines. Move the pieces into a folder named for that responsibility. `index.ts` re-exports the public functions and types, and other modules keep importing the folder.
+
+```
+src/accommodations.ts
+```
+
+becomes
+
+```
+src/accommodations/index.ts
+src/accommodations/types.ts
+src/accommodations/footprint.ts
+src/accommodations/occupants.ts
+src/accommodations/occupants.test.ts
+```
+
+Tests move with the code they cover. `index.ts` only re-exports.
