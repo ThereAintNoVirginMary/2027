@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PassCard } from "./pass-status";
 import { deleteVehicle, saveVehicle, vehicleError, type Vehicle } from "./vehicles";
 import {
   Field,
@@ -68,13 +69,12 @@ export function VehiclesSection({
       {vehicles.length > 0 && (
         <ul className="flex flex-col gap-3">
           {vehicles.map((vehicle) => (
-            <li key={vehicle.id} className="rounded-lg border border-line bg-paper px-4 py-3">
+            <PassCard key={vehicle.id} needsPass hasPass={vehicle.hasPass}>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold">{vehicle.label}</p>
                   <p className="text-sm text-muted">
                     {vehicle.lengthFt} × {vehicle.widthFt} ft
-                    {vehicle.hasPass ? " · vehicle pass" : ""}
                   </p>
                 </div>
                 <div className="flex gap-3">
@@ -100,7 +100,7 @@ export function VehiclesSection({
                   </QuietButton>
                 </div>
               </div>
-            </li>
+            </PassCard>
           ))}
         </ul>
       )}
