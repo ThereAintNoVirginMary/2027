@@ -83,6 +83,10 @@ export function AccommodationsSection({
         subject="accommodations"
         checked={listing}
         onChange={(checked) => {
+          if (!checked && owned.length > 0) {
+            window.alert("Remove the accommodations you listed before turning this off.");
+            return;
+          }
           setListing(checked);
           if (!checked) {
             setDraft(null);
@@ -144,8 +148,9 @@ export function AccommodationsSection({
       {listing && !profileSaved && (
         <Notice tone="error">Save your details before adding a place.</Notice>
       )}
-      {listing && profileSaved && draft === null && (
+      {draft === null && (
         <PrimaryButton
+          disabled={!listing || !profileSaved}
           onClick={() => {
             setDraft(blankDraft());
             setError(null);
