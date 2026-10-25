@@ -59,6 +59,10 @@ export function VehiclesSection({
         subject="vehicles"
         checked={listing}
         onChange={(checked) => {
+          if (!checked && vehicles.length > 0) {
+            window.alert("Remove the vehicles you listed before turning this off.");
+            return;
+          }
           setListing(checked);
           if (!checked) {
             setDraft(null);
@@ -107,8 +111,9 @@ export function VehiclesSection({
       {listing && !profileSaved && (
         <Notice tone="error">Save your details before adding a vehicle.</Notice>
       )}
-      {listing && profileSaved && draft === null && (
+      {draft === null && (
         <PrimaryButton
+          disabled={!listing || !profileSaved}
           onClick={() => {
             setDraft(blank());
             setError(null);

@@ -100,7 +100,7 @@ export function ToggleRow({
   onChange,
 }: {
   title: string;
-  hint: string;
+  hint?: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
@@ -108,7 +108,7 @@ export function ToggleRow({
     <div className="flex items-center justify-between gap-4">
       <div>
         <p className="font-medium">{title}</p>
-        <p className="text-sm text-muted">{hint}</p>
+        {hint && <p className="text-sm text-muted">{hint}</p>}
       </div>
       <button
         type="button"
