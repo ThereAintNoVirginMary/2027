@@ -17,48 +17,69 @@ export function useRegistration(uid: string, email: string) {
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    const fail = () => {
+      setLoadError("Camp data could not be loaded.");
+      setReady(true);
+    };
     const unsubs = [
-      onSnapshot(doc(db, "people", uid), (snap) => {
-        setPerson(snap.exists() ? parsePerson(snap.data(), email) : null);
-        setReady(true);
-      }),
-      onSnapshot(collection(db, "directory"), (snap) => {
-        setDirectory(
-          snap.docs
-            .map((item) => {
-              const data = item.data() as Record<string, unknown>;
-              return {
-                uid: item.id,
-                legalName: typeof data.legalName === "string" ? data.legalName : "",
-                email: typeof data.email === "string" ? data.email : "",
-              };
-            })
-            .sort((a, b) => a.legalName.localeCompare(b.legalName)),
-        );
-      }),
-      onSnapshot(collection(db, "accommodations"), (snap) => {
-        setAccommodations(
-          snap.docs.flatMap((item) => {
-            const parsed = parseAccommodation(item.id, item.data());
-            return parsed ? [parsed] : [];
-          }),
-        );
-      }),
-      onSnapshot(query(collection(db, "vehicles"), where("ownerUid", "==", uid)), (snap) => {
-        setVehicles(
-          snap.docs.flatMap((item) => {
-            const parsed = parseVehicle(item.id, item.data());
-            return parsed ? [parsed] : [];
-          }),
-        );
-      }),
+      onSnapshot(
+        doc(db, "people", uid),
+        (snap) => {
+          setPerson(snap.exists() ? parsePerson(snap.data(), email) : null);
+          setReady(true);
+        },
+        fail,
+      ),
+      onSnapshot(
+        collection(db, "directory"),
+        (snap) => {
+          setDirectory(
+            snap.docs
+              .map((item) => {
+                const data = item.data() as Record<string, unknown>;
+                return {
+                  uid: item.id,
+                  legalName: typeof data.legalName === "string" ? data.legalName : "",
+                  email: typeof data.email === "string" ? data.email : "",
+                };
+              })
+              .sort((a, b) => a.legalName.localeCompare(b.legalName)),
+          );
+        },
+        fail,
+      ),
+      onSnapshot(
+        collection(db, "accommodations"),
+        (snap) => {
+          setAccommodations(
+            snap.docs.flatMap((item) => {
+              const parsed = parseAccommodation(item.id, item.data());
+              return parsed ? [parsed] : [];
+            }),
+          );
+        },
+        fail,
+      ),
+      onSnapshot(
+        query(collection(db, "vehicles"), where("ownerUid", "==", uid)),
+        (snap) => {
+          setVehicles(
+            snap.docs.flatMap((item) => {
+              const parsed = parseVehicle(item.id, item.data());
+              return parsed ? [parsed] : [];
+            }),
+          );
+        },
+        fail,
+      ),
     ];
     return () => {
       for (const unsub of unsubs) unsub();
     };
   }, [uid, email]);
 
-  return { person, directory, accommodations, vehicles, ready };
+  return { person, directory, accommodations, vehicles, ready, loadError };
 }
