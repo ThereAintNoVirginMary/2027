@@ -94,15 +94,16 @@ export function AccommodationEditor({
         </Field>
       </div>
       {draft.type === "rv" && (
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-start gap-2 text-sm">
           <input
             type="checkbox"
+            className="mt-0.5"
             checked={draft.vehiclePass}
             onChange={(event) => {
               onChange({ ...draft, vehiclePass: event.target.checked });
             }}
           />
-          I have a vehicle pass for this RV
+          I have a vehicle pass for this RV. Check this once you have the pass.
         </label>
       )}
       <Field label="People who sleep here">
