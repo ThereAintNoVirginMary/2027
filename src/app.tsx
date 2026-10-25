@@ -6,7 +6,7 @@ import { logOut } from "./auth";
 import { PersonSection } from "./person-section";
 import { useRegistration } from "./registration";
 import { RolesSection } from "./roles-section";
-import { QuietButton } from "./ui";
+import { QuietButton, Notice } from "./ui";
 import { VehiclesSection } from "./vehicles-section";
 import { AdminPage } from "./admin-page";
 
@@ -16,6 +16,13 @@ export function CampApp({ user }: { user: User }) {
   const [page, setPage] = useState<"registration" | "appointments">("registration");
   if (!data.ready) {
     return <p className="px-4 py-10 text-muted">Loading…</p>;
+  }
+  if (data.loadError) {
+    return (
+      <main className="mx-auto max-w-xl px-4 py-10">
+        <Notice tone="error">{data.loadError}</Notice>
+      </main>
+    );
   }
 
   const owned = data.accommodations.filter((item) => item.ownerUid === user.uid);

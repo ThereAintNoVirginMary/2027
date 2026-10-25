@@ -1,6 +1,6 @@
 import {
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
+  onIdTokenChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -12,8 +12,27 @@ import { auth } from "./firebase";
 
 export function useAuthUser(): User | null | undefined {
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  useEffect(() => onAuthStateChanged(auth, setUser), []);
+  useEffect(() => onIdTokenChanged(auth, setUser), []);
   return user;
+}
+
+export function useVerifiedToken(user: User | null | undefined): boolean {
+  const uid = user?.uid ?? null;
+  const verified = user?.emailVerified === true;
+  const [readyFor, setReadyFor] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!uid || !verified) return;
+    let cancelled = false;
+    void auth.currentUser?.getIdToken(true).then(() => {
+      if (!cancelled) setReadyFor(uid);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [uid, verified]);
+
+  return verified && readyFor === uid;
 }
 
 export async function signIn(email: string, password: string): Promise<void> {
@@ -35,6 +54,7 @@ export async function resendVerification(user: User): Promise<void> {
 
 export async function reloadUser(user: User): Promise<boolean> {
   await user.reload();
+  if (user.emailVerified) await user.getIdToken(true);
   return user.emailVerified;
 }
 
