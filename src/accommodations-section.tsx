@@ -7,6 +7,7 @@ import {
   saveAccommodation,
   type Accommodation,
 } from "./accommodations";
+import { PassCard } from "./pass-status";
 import { type DirectoryEntry } from "./registration";
 import { Notice, PrimaryButton, QuietButton, Section, SoleRepresentative } from "./ui";
 
@@ -93,14 +94,13 @@ export function AccommodationsSection({
       {owned.length > 0 && (
         <ul className="flex flex-col gap-3">
           {owned.map((item) => (
-            <li key={item.id} className="rounded-lg border border-line bg-paper px-4 py-3">
+            <PassCard key={item.id} needsPass={item.type === "rv"} hasPass={item.vehiclePass}>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold">{item.label}</p>
                   <p className="text-sm text-muted">
                     {ACCOMMODATION_TYPES.find(([type]) => type === item.type)?.[1]} ·{" "}
                     {item.lengthFt} × {item.widthFt} ft
-                    {item.type === "rv" && item.vehiclePass ? " · vehicle pass" : ""}
                   </p>
                   <p className="text-sm">
                     {item.occupantUids
@@ -137,7 +137,7 @@ export function AccommodationsSection({
                   </QuietButton>
                 </div>
               </div>
-            </li>
+            </PassCard>
           ))}
         </ul>
       )}
