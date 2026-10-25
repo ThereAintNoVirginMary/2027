@@ -1,0 +1,13 @@
+---
+description: Publish only from the merge pipeline
+alwaysApply: true
+---
+
+# Deploy
+
+A squash merge to `main` is the only publish. `.github/workflows/deploy.yml` runs on that push.
+
+- GitHub Pages publishes the Vite build.
+- Firestore rules and indexes publish with `firebase deploy --only firestore`.
+
+Do not deploy from a laptop. Do not run `firebase deploy`, and do not upload `dist/` by hand. A change to rules, indexes, or the page waits for the pull request to merge.
