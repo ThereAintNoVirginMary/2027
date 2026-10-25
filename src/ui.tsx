@@ -67,6 +67,28 @@ export function QuietButton({ children, onClick }: { children: ReactNode; onClic
   );
 }
 
+export function SoleRepresentative({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className="flex items-start gap-3 text-sm">
+      <input
+        type="checkbox"
+        className="mt-0.5"
+        checked={checked}
+        onChange={(event) => {
+          onChange(event.target.checked);
+        }}
+      />
+      I am the sole representative for some accommodations/vehicles and no one else will list them
+    </label>
+  );
+}
+
 export function ToggleRow({
   title,
   hint,

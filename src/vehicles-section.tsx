@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { deleteVehicle, saveVehicle, vehicleError, type Vehicle } from "./vehicles";
-import { Field, Notice, PrimaryButton, QuietButton, Section, inputClass } from "./ui";
+import {
+  Field,
+  Notice,
+  PrimaryButton,
+  QuietButton,
+  Section,
+  SoleRepresentative,
+  inputClass,
+} from "./ui";
 
 type Draft = { id: string; label: string; length: string; width: string; hasPass: boolean };
 
@@ -19,6 +27,7 @@ export function VehiclesSection({
 }) {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [listing, setListing] = useState(vehicles.length > 0);
 
   async function save() {
     if (!draft) return;
@@ -42,48 +51,62 @@ export function VehiclesSection({
 
   return (
     <Section
-      title="Vehicles you drive"
-      hint="An RV stays under where you sleep. A trailer has no vehicle pass. The tow vehicle is a row here."
+      title="Vehicles"
+      hint="An RV stays under accommodation. A trailer has no vehicle pass. The tow vehicle is a row here."
     >
-      <ul className="flex flex-col gap-3">
-        {vehicles.map((vehicle) => (
-          <li key={vehicle.id} className="rounded-lg border border-line bg-paper px-4 py-3">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-semibold">{vehicle.label}</p>
-                <p className="text-sm text-muted">
-                  {vehicle.lengthFt} × {vehicle.widthFt} ft
-                  {vehicle.hasPass ? " · vehicle pass" : ""}
-                </p>
+      <SoleRepresentative
+        checked={listing}
+        onChange={(checked) => {
+          setListing(checked);
+          if (!checked) {
+            setDraft(null);
+            setError(null);
+          }
+        }}
+      />
+      {listing && (
+        <ul className="flex flex-col gap-3">
+          {vehicles.map((vehicle) => (
+            <li key={vehicle.id} className="rounded-lg border border-line bg-paper px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold">{vehicle.label}</p>
+                  <p className="text-sm text-muted">
+                    {vehicle.lengthFt} × {vehicle.widthFt} ft
+                    {vehicle.hasPass ? " · vehicle pass" : ""}
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <QuietButton
+                    onClick={() => {
+                      setDraft({
+                        id: vehicle.id,
+                        label: vehicle.label,
+                        length: String(vehicle.lengthFt),
+                        width: String(vehicle.widthFt),
+                        hasPass: vehicle.hasPass,
+                      });
+                    }}
+                  >
+                    Edit
+                  </QuietButton>
+                  <QuietButton
+                    onClick={() => {
+                      void deleteVehicle(vehicle.id);
+                    }}
+                  >
+                    Remove
+                  </QuietButton>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <QuietButton
-                  onClick={() => {
-                    setDraft({
-                      id: vehicle.id,
-                      label: vehicle.label,
-                      length: String(vehicle.lengthFt),
-                      width: String(vehicle.widthFt),
-                      hasPass: vehicle.hasPass,
-                    });
-                  }}
-                >
-                  Edit
-                </QuietButton>
-                <QuietButton
-                  onClick={() => {
-                    void deleteVehicle(vehicle.id);
-                  }}
-                >
-                  Remove
-                </QuietButton>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {!profileSaved && <Notice tone="error">Save your details before adding a vehicle.</Notice>}
-      {profileSaved && draft === null && (
+            </li>
+          ))}
+        </ul>
+      )}
+      {listing && !profileSaved && (
+        <Notice tone="error">Save your details before adding a vehicle.</Notice>
+      )}
+      {listing && profileSaved && draft === null && (
         <PrimaryButton
           onClick={() => {
             setDraft(blank());
@@ -93,7 +116,7 @@ export function VehiclesSection({
           Add a vehicle
         </PrimaryButton>
       )}
-      {draft && (
+      {listing && draft && (
         <div className="flex flex-col gap-4 rounded-lg border border-line bg-paper p-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Label">

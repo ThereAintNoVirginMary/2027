@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { accommodationError } from "./accommodations";
 import { personError, emptyPerson } from "./person";
-import { isHelpRole, isLeadRole } from "./roles";
+import { HELP_ROLES, LEAD_ROLES, isHelpRole, isLeadRole } from "./roles";
 
 describe("registration checks", () => {
   it("requires a legal name", () => {
@@ -33,5 +33,9 @@ describe("registration checks", () => {
     expect(isLeadRole("build")).toBe(true);
     expect(isHelpRole("build")).toBe(false);
     expect(isHelpRole("sound")).toBe(true);
+    expect(LEAD_ROLES.find(([id]) => id === "container")?.[1]).toBe(
+      "Container shipping coordination",
+    );
+    expect(HELP_ROLES.find(([id]) => id === "burlesque")?.[1]).toBe("Burlesque show");
   });
 });

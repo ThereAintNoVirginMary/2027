@@ -47,10 +47,7 @@ export function RolesSection({ uid, person }: { uid: string; person: Person | nu
       hint="Willingness only. An admin appoints one lead per role."
     >
       <div className="flex flex-col gap-2">
-        <p className="font-medium">I could lead</p>
-        <p className="text-sm text-muted">
-          Build and strike are lead roles. Helping with them is the early and late toggles.
-        </p>
+        <p className="font-medium">I could be the lead for</p>
         <div className="flex flex-wrap gap-2">
           {LEAD_ROLES.map(([role, label]) => (
             <Chip
@@ -65,10 +62,7 @@ export function RolesSection({ uid, person }: { uid: string; person: Person | nu
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <p className="font-medium">I can help</p>
-        <p className="text-sm text-muted">
-          Sound is here as well as under lead, so someone can run cables without holding the role.
-        </p>
+        <p className="font-medium">I can contribute to</p>
         <div className="flex flex-wrap gap-2">
           {HELP_ROLES.map(([role, label]) => (
             <Chip

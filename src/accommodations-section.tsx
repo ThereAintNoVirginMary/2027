@@ -8,7 +8,7 @@ import {
   type Accommodation,
 } from "./accommodations";
 import { type DirectoryEntry } from "./registration";
-import { Notice, PrimaryButton, QuietButton, Section } from "./ui";
+import { Notice, PrimaryButton, QuietButton, Section, SoleRepresentative } from "./ui";
 
 export function AccommodationsSection({
   uid,
@@ -26,6 +26,7 @@ export function AccommodationsSection({
   const [draft, setDraft] = useState<Draft | null>(null);
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [listing, setListing] = useState(owned.length > 0);
 
   const sleeping = all.find((item) => item.occupantUids.includes(uid));
   const matches = directory
@@ -74,61 +75,75 @@ export function AccommodationsSection({
 
   return (
     <Section
-      title="Where you sleep"
-      hint="Add a place only if you are responsible for it. Add every sleeper, including yourself. An RV carries its own vehicle pass."
+      title="Accommodation"
+      hint="Add every sleeper, including yourself. An RV carries its own vehicle pass."
     >
+      <SoleRepresentative
+        checked={listing}
+        onChange={(checked) => {
+          setListing(checked);
+          if (!checked) {
+            setDraft(null);
+            setError(null);
+          }
+        }}
+      />
       {sleeping && <p className="text-sm text-muted">You are listed in {sleeping.label}.</p>}
-      <ul className="flex flex-col gap-3">
-        {owned.map((item) => (
-          <li key={item.id} className="rounded-lg border border-line bg-paper px-4 py-3">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-semibold">{item.label}</p>
-                <p className="text-sm text-muted">
-                  {ACCOMMODATION_TYPES.find(([type]) => type === item.type)?.[1]} · {item.lengthFt}{" "}
-                  × {item.widthFt} ft
-                  {item.type === "rv" && item.vehiclePass ? " · vehicle pass" : ""}
-                </p>
-                <p className="text-sm">
-                  {item.occupantUids
-                    .map(
-                      (personUid) =>
-                        directory.find((person) => person.uid === personUid)?.legalName ??
-                        "Registered",
-                    )
-                    .join(", ") || "No one listed yet"}
-                </p>
+      {listing && (
+        <ul className="flex flex-col gap-3">
+          {owned.map((item) => (
+            <li key={item.id} className="rounded-lg border border-line bg-paper px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold">{item.label}</p>
+                  <p className="text-sm text-muted">
+                    {ACCOMMODATION_TYPES.find(([type]) => type === item.type)?.[1]} ·{" "}
+                    {item.lengthFt} × {item.widthFt} ft
+                    {item.type === "rv" && item.vehiclePass ? " · vehicle pass" : ""}
+                  </p>
+                  <p className="text-sm">
+                    {item.occupantUids
+                      .map(
+                        (personUid) =>
+                          directory.find((person) => person.uid === personUid)?.legalName ??
+                          "Registered",
+                      )
+                      .join(", ") || "No one listed yet"}
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <QuietButton
+                    onClick={() => {
+                      setDraft({
+                        id: item.id,
+                        label: item.label,
+                        type: item.type,
+                        length: String(item.lengthFt),
+                        width: String(item.widthFt),
+                        vehiclePass: item.vehiclePass,
+                        occupantUids: item.occupantUids,
+                      });
+                    }}
+                  >
+                    Edit
+                  </QuietButton>
+                  <QuietButton
+                    onClick={() => {
+                      void deleteAccommodation(item);
+                    }}
+                  >
+                    Remove
+                  </QuietButton>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <QuietButton
-                  onClick={() => {
-                    setDraft({
-                      id: item.id,
-                      label: item.label,
-                      type: item.type,
-                      length: String(item.lengthFt),
-                      width: String(item.widthFt),
-                      vehiclePass: item.vehiclePass,
-                      occupantUids: item.occupantUids,
-                    });
-                  }}
-                >
-                  Edit
-                </QuietButton>
-                <QuietButton
-                  onClick={() => {
-                    void deleteAccommodation(item);
-                  }}
-                >
-                  Remove
-                </QuietButton>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {!profileSaved && <Notice tone="error">Save your details before adding a place.</Notice>}
-      {profileSaved && draft === null && (
+            </li>
+          ))}
+        </ul>
+      )}
+      {listing && !profileSaved && (
+        <Notice tone="error">Save your details before adding a place.</Notice>
+      )}
+      {listing && profileSaved && draft === null && (
         <PrimaryButton
           onClick={() => {
             setDraft(blankDraft());
@@ -138,7 +153,7 @@ export function AccommodationsSection({
           Add a place
         </PrimaryButton>
       )}
-      {draft && (
+      {listing && draft && (
         <AccommodationEditor
           draft={draft}
           directory={directory}
