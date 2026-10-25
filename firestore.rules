@@ -1,9 +1,166 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Deny all reads and writes until rules are written for each collection.
-    match /{document=**} {
-      allow read, write: if false;
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function verified() {
+      return signedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return verified()
+        && get(/databases/$(database)/documents/people/$(request.auth.uid)).data.admin == true;
+    }
+
+    function leadRolesOk(roles) {
+      return roles is list
+        && roles.size() <= 11
+        && roles.hasOnly([
+          'floorplan', 'container', 'procurement', 'build', 'strike', 'art',
+          'artcar', 'burlesque', 'bar', 'sound', 'live-music'
+        ]);
+    }
+
+    function helpRolesOk(roles) {
+      return roles is list
+        && roles.size() <= 9
+        && roles.hasOnly([
+          'floorplan', 'container', 'procurement', 'art', 'artcar',
+          'burlesque', 'bar', 'sound', 'live-music'
+        ]);
+    }
+
+    function personOk(data) {
+      return data.keys().hasOnly([
+          'legalName', 'email', 'whatsapp', 'emergencyName', 'emergencyPhone',
+          'hasTicket', 'earlyBuild', 'lateTeardown', 'leadRoles', 'helpRoles', 'admin'
+        ])
+        && data.legalName is string && data.legalName.size() > 0 && data.legalName.size() <= 120
+        && data.email is string
+        && data.whatsapp is string && data.whatsapp.size() > 0 && data.whatsapp.size() <= 40
+        && data.emergencyName is string && data.emergencyName.size() > 0 && data.emergencyName.size() <= 120
+        && data.emergencyPhone is string && data.emergencyPhone.size() > 0 && data.emergencyPhone.size() <= 40
+        && data.hasTicket is bool
+        && data.earlyBuild is bool
+        && data.lateTeardown is bool
+        && leadRolesOk(data.leadRoles)
+        && helpRolesOk(data.helpRoles)
+        && data.admin is bool;
+    }
+
+    function feetOk(n) {
+      return n is number && n > 0 && n <= 80;
+    }
+
+    function accommodationOk(data) {
+      return data.keys().hasOnly([
+          'ownerUid', 'label', 'type', 'lengthFt', 'widthFt', 'vehiclePass', 'occupantUids'
+        ])
+        && data.ownerUid is string
+        && data.label is string && data.label.size() > 0 && data.label.size() <= 80
+        && data.type in ['rv', 'trailer', 'yurt', 'shiftpod']
+        && feetOk(data.lengthFt)
+        && feetOk(data.widthFt)
+        && data.vehiclePass is bool
+        && (data.type == 'rv' || data.vehiclePass == false)
+        && data.occupantUids is list && data.occupantUids.size() <= 16;
+    }
+
+    function vehicleOk(data) {
+      return data.keys().hasOnly(['ownerUid', 'label', 'lengthFt', 'widthFt', 'hasPass'])
+        && data.ownerUid is string
+        && data.label is string && data.label.size() > 0 && data.label.size() <= 80
+        && feetOk(data.lengthFt)
+        && feetOk(data.widthFt)
+        && data.hasPass is bool;
+    }
+
+    function ownsAccommodation(id) {
+      return isAdmin()
+        || (
+          exists(/databases/$(database)/documents/accommodations/$(id))
+          && get(/databases/$(database)/documents/accommodations/$(id)).data.ownerUid == request.auth.uid
+        );
+    }
+
+    match /people/{uid} {
+      allow read: if verified() && (request.auth.uid == uid || isAdmin());
+      allow create: if verified()
+        && request.auth.uid == uid
+        && personOk(request.resource.data)
+        && request.resource.data.admin == false
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if verified()
+        && personOk(request.resource.data)
+        && request.resource.data.email == resource.data.email
+        && (
+          (request.auth.uid == uid && request.resource.data.admin == resource.data.admin)
+          || isAdmin()
+        );
+      allow delete: if false;
+    }
+
+    match /directory/{uid} {
+      allow read: if verified();
+      allow create, update: if verified()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['legalName', 'email'])
+        && request.resource.data.legalName is string
+        && request.resource.data.legalName.size() > 0
+        && request.resource.data.email == request.auth.token.email;
+      allow delete: if false;
+    }
+
+    match /accommodations/{id} {
+      allow read: if verified();
+      allow create: if verified()
+        && accommodationOk(request.resource.data)
+        && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if verified()
+        && accommodationOk(request.resource.data)
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && (resource.data.ownerUid == request.auth.uid || isAdmin());
+      allow delete: if verified() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+    }
+
+    match /vehicles/{id} {
+      allow read: if verified();
+      allow create: if verified()
+        && vehicleOk(request.resource.data)
+        && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if verified()
+        && vehicleOk(request.resource.data)
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && (resource.data.ownerUid == request.auth.uid || isAdmin());
+      allow delete: if verified() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+    }
+
+    match /occupancy/{uid} {
+      allow read: if verified();
+      allow create: if verified()
+        && request.resource.data.keys().hasOnly(['accommodationId'])
+        && request.resource.data.accommodationId is string
+        && ownsAccommodation(request.resource.data.accommodationId);
+      allow update: if verified()
+        && request.resource.data.keys().hasOnly(['accommodationId'])
+        && request.resource.data.accommodationId is string
+        && ownsAccommodation(resource.data.accommodationId)
+        && ownsAccommodation(request.resource.data.accommodationId);
+      allow delete: if verified() && ownsAccommodation(resource.data.accommodationId);
+    }
+
+    match /leads/{role} {
+      allow read: if verified();
+      allow create, update: if isAdmin()
+        && role in [
+          'floorplan', 'container', 'procurement', 'build', 'strike', 'art',
+          'artcar', 'burlesque', 'bar', 'sound', 'live-music'
+        ]
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid is string;
+      allow delete: if isAdmin();
     }
   }
 }
