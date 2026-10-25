@@ -79,6 +79,7 @@ export function AccommodationsSection({
       hint="Add every sleeper, including yourself. An RV carries its own vehicle pass."
     >
       <SoleRepresentative
+        subject="accommodations"
         checked={listing}
         onChange={(checked) => {
           setListing(checked);
@@ -89,7 +90,7 @@ export function AccommodationsSection({
         }}
       />
       {sleeping && <p className="text-sm text-muted">You are listed in {sleeping.label}.</p>}
-      {listing && (
+      {owned.length > 0 && (
         <ul className="flex flex-col gap-3">
           {owned.map((item) => (
             <li key={item.id} className="rounded-lg border border-line bg-paper px-4 py-3">

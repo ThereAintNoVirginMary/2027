@@ -68,12 +68,15 @@ export function QuietButton({ children, onClick }: { children: ReactNode; onClic
 }
 
 export function SoleRepresentative({
+  subject,
   checked,
   onChange,
 }: {
+  subject: "accommodations" | "vehicles";
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
+  const one = subject === "accommodations" ? "accommodation" : "vehicle";
   return (
     <label className="flex items-start gap-3 text-sm">
       <input
@@ -84,7 +87,8 @@ export function SoleRepresentative({
           onChange(event.target.checked);
         }}
       />
-      I am the sole representative for some accommodations/vehicles and no one else will list them
+      I confirm that I am the sole representative of the following {subject}. No one else will list
+      the same {one}, to avoid double counting.
     </label>
   );
 }

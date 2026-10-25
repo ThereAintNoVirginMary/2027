@@ -55,6 +55,7 @@ export function VehiclesSection({
       hint="An RV stays under accommodation. A trailer has no vehicle pass. The tow vehicle is a row here."
     >
       <SoleRepresentative
+        subject="vehicles"
         checked={listing}
         onChange={(checked) => {
           setListing(checked);
@@ -64,7 +65,7 @@ export function VehiclesSection({
           }
         }}
       />
-      {listing && (
+      {vehicles.length > 0 && (
         <ul className="flex flex-col gap-3">
           {vehicles.map((vehicle) => (
             <li key={vehicle.id} className="rounded-lg border border-line bg-paper px-4 py-3">
