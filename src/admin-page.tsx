@@ -99,7 +99,10 @@ export function AdminPage() {
         </div>
       </Section>
       <Section title="Appointed leads" hint="One person per role. Anyone registered can be chosen.">
-        <p className="text-sm font-medium text-sage">Green means they volunteered for that role.</p>
+        <p className="text-sm font-medium">
+          <span className="text-sage">Green means they volunteered for that role.</span>{" "}
+          <span className="text-danger">Red means they did not.</span>
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           {LEAD_ROLES.map(([role]) => (
             <LeadChoice
