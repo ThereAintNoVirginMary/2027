@@ -6,6 +6,7 @@ import { logOut } from "./auth";
 import { PersonSection } from "./person-section";
 import { useRegistration } from "./registration";
 import { RolesSection } from "./roles-section";
+import { SaveBanner } from "./save-banner";
 import { QuietButton, Notice } from "./ui";
 import { VehiclesSection } from "./vehicles-section";
 import { AdminPage } from "./admin-page";
@@ -30,6 +31,7 @@ export function CampApp({ user }: { user: User }) {
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-8 px-4 py-8">
+      <SaveBanner />
       <header className="flex flex-col gap-3">
         <div className="flex items-start justify-between gap-4">
           <h1 className="text-2xl font-semibold">There Ain't No Virgin Mary</h1>
