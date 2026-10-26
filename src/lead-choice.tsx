@@ -71,7 +71,7 @@ export function LeadChoice({
               <li key={person.uid}>
                 <button
                   type="button"
-                  className={`block w-full px-3 py-2 text-left text-base font-normal ${volunteered ? "bg-sage text-white" : "text-ink"}`}
+                  className={`block w-full px-3 py-2 text-left text-base font-normal text-ink ${volunteered ? "bg-sage/20" : "bg-danger/20"}`}
                   onClick={() => {
                     onChange(person.uid);
                     setOpen(false);
