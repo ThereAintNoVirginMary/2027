@@ -102,7 +102,8 @@ export function AdminPage() {
         hint="One person per role, chosen from people who said they could lead."
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          {LEAD_ROLES.map(([role, label]) => {
+          {LEAD_ROLES.map(([role]) => {
+            const label = leadLabel(role);
             const willing = people.filter((person) => person.leadRoles.includes(role));
             const current = leads[role] ?? "";
             return (
