@@ -77,7 +77,7 @@ export function AccommodationsSection({
   return (
     <Section
       title="Accommodation"
-      hint="Add every sleeper, including yourself. An RV carries its own vehicle pass."
+      hint="Add every sleeper, including yourself. You can add them later and only after they registered."
     >
       <SoleRepresentative
         subject="accommodations"

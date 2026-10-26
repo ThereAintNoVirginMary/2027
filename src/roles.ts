@@ -1,5 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { persist } from "./save-notice";
 
 export const LEAD_ROLES = [
   ["floorplan", "Floorplan"],
@@ -50,5 +51,5 @@ export async function saveWillingness(
   leadRoles: LeadRole[],
   helpRoles: HelpRole[],
 ): Promise<void> {
-  await updateDoc(doc(db, "people", uid), { leadRoles, helpRoles });
+  await persist(() => updateDoc(doc(db, "people", uid), { leadRoles, helpRoles }));
 }

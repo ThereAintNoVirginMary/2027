@@ -1,5 +1,6 @@
 import { deleteDoc, doc, runTransaction, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { persist } from "./save-notice";
 
 export const ACCOMMODATION_TYPES = [
   ["rv", "RV (requires vehicle pass)"],
@@ -97,6 +98,13 @@ export async function saveAccommodation(
 ): Promise<void> {
   const error = accommodationError(next);
   if (error) throw new Error(error);
+  await persist(() => writeAccommodation(next, previous));
+}
+
+async function writeAccommodation(
+  next: Accommodation,
+  previous: Accommodation | null,
+): Promise<void> {
   const ref = doc(db, "accommodations", next.id);
   await setDoc(ref, stored(next));
   const before = previous?.occupantUids ?? [];
@@ -128,9 +136,11 @@ export async function saveAccommodation(
 }
 
 export async function deleteAccommodation(acc: Accommodation): Promise<void> {
-  await runTransaction(db, (tx) => {
-    for (const uid of acc.occupantUids) tx.delete(doc(db, "occupancy", uid));
-    tx.delete(doc(db, "accommodations", acc.id));
-    return Promise.resolve();
-  });
+  await persist(() =>
+    runTransaction(db, (tx) => {
+      for (const uid of acc.occupantUids) tx.delete(doc(db, "occupancy", uid));
+      tx.delete(doc(db, "accommodations", acc.id));
+      return Promise.resolve();
+    }),
+  );
 }

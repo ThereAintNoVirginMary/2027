@@ -53,7 +53,7 @@ export function VehiclesSection({
   return (
     <Section
       title="Vehicles"
-      hint="An RV stays under accommodation. A trailer has no vehicle pass. The tow vehicle is a row here."
+      hint="Add an RV under accommodation and mark its vehicle pass there. Note that a trailer needs no vehicle pass, but its tow vehicle does and should be listed here."
     >
       <SoleRepresentative
         subject="vehicles"

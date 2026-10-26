@@ -1,5 +1,6 @@
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { persist } from "./save-notice";
 import { type HelpRole, type LeadRole, isHelpRole, isLeadRole } from "./roles";
 
 export type Person = {
@@ -79,9 +80,11 @@ export async function savePerson(uid: string, person: Person): Promise<void> {
     helpRoles: person.helpRoles,
     admin: person.admin,
   };
-  await setDoc(doc(db, "people", uid), stored);
-  await setDoc(doc(db, "directory", uid), {
-    legalName: stored.legalName,
-    email: stored.email,
+  await persist(async () => {
+    await setDoc(doc(db, "people", uid), stored);
+    await setDoc(doc(db, "directory", uid), {
+      legalName: stored.legalName,
+      email: stored.email,
+    });
   });
 }

@@ -1,5 +1,6 @@
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { persist } from "./save-notice";
 
 export type Vehicle = {
   id: string;
@@ -50,15 +51,17 @@ export function parseVehicle(id: string, value: unknown): Vehicle | null {
 export async function saveVehicle(vehicle: Vehicle): Promise<void> {
   const error = vehicleError(vehicle);
   if (error) throw new Error(error);
-  await setDoc(doc(db, "vehicles", vehicle.id), {
-    ownerUid: vehicle.ownerUid,
-    label: vehicle.label.trim(),
-    lengthFt: vehicle.lengthFt,
-    widthFt: vehicle.widthFt,
-    hasPass: vehicle.hasPass,
-  });
+  await persist(() =>
+    setDoc(doc(db, "vehicles", vehicle.id), {
+      ownerUid: vehicle.ownerUid,
+      label: vehicle.label.trim(),
+      lengthFt: vehicle.lengthFt,
+      widthFt: vehicle.widthFt,
+      hasPass: vehicle.hasPass,
+    }),
+  );
 }
 
 export async function deleteVehicle(id: string): Promise<void> {
-  await deleteDoc(doc(db, "vehicles", id));
+  await persist(() => deleteDoc(doc(db, "vehicles", id)));
 }
