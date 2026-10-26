@@ -99,40 +99,91 @@ export function AdminPage() {
       </Section>
       <Section
         title="Appointed leads"
-        hint="One person per role, chosen from people who said they could lead."
+        hint="One person per role. Anyone registered can be chosen. Volunteers for that role are green."
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          {LEAD_ROLES.map(([role]) => {
-            const label = leadLabel(role);
-            const willing = people.filter((person) => person.leadRoles.includes(role));
-            const current = leads[role] ?? "";
-            return (
-              <label key={role} className="flex flex-col gap-1.5 text-sm font-medium text-muted">
-                {label}
-                <select
-                  className="rounded-lg border border-line bg-paper px-3 py-3 text-base font-normal text-ink"
-                  value={current}
-                  onChange={(event) => {
-                    const uid = event.target.value;
-                    if (uid === "") void clearLead(role);
-                    else void appointLead(role, uid);
-                  }}
-                >
-                  <option value="">Choose a lead</option>
-                  {current !== "" && !willing.some((person) => person.uid === current) && (
-                    <option value={current}>{leadLabel(role)} (current)</option>
-                  )}
-                  {willing.map((person) => (
-                    <option key={person.uid} value={person.uid}>
-                      {person.legalName}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            );
-          })}
+          {LEAD_ROLES.map(([role]) => (
+            <LeadChoice
+              key={role}
+              role={role}
+              label={leadLabel(role)}
+              people={people}
+              current={leads[role] ?? ""}
+              onChange={(uid) => {
+                if (uid === "") void clearLead(role);
+                else void appointLead(role, uid);
+              }}
+            />
+          ))}
         </div>
       </Section>
+    </div>
+  );
+}
+
+function LeadChoice({
+  role,
+  label,
+  people,
+  current,
+  onChange,
+}: {
+  role: LeadRole;
+  label: string;
+  people: RosterRow[];
+  current: string;
+  onChange: (uid: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const chosen = people.find((person) => person.uid === current);
+  const ordered = [...people].sort((a, b) => a.legalName.localeCompare(b.legalName));
+
+  return (
+    <div className="relative flex flex-col gap-1.5 text-sm font-medium text-muted">
+      {label}
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => {
+          setOpen((value) => !value);
+        }}
+        className="rounded-lg border border-line bg-paper px-3 py-3 text-left text-base font-normal text-ink"
+      >
+        {chosen?.legalName || "Choose a lead"}
+      </button>
+      {open && (
+        <ul className="absolute top-full z-10 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-line bg-paper">
+          <li>
+            <button
+              type="button"
+              className="block w-full px-3 py-2 text-left text-base font-normal text-ink"
+              onClick={() => {
+                onChange("");
+                setOpen(false);
+              }}
+            >
+              Choose a lead
+            </button>
+          </li>
+          {ordered.map((person) => {
+            const volunteered = person.leadRoles.includes(role);
+            return (
+              <li key={person.uid}>
+                <button
+                  type="button"
+                  className={`block w-full px-3 py-2 text-left text-base font-normal ${volunteered ? "bg-sage text-white" : "text-ink"}`}
+                  onClick={() => {
+                    onChange(person.uid);
+                    setOpen(false);
+                  }}
+                >
+                  {person.legalName || "Registered"}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
