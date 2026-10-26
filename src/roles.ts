@@ -2,30 +2,47 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { persist } from "./save-notice";
 
+const ROLE_COPY = {
+  floorplan: ["Floorplan", "Where every place and vehicle sits on the lot"],
+  container: [
+    "Container shipping coordination",
+    "Getting the camp container to the playa and back",
+  ],
+  procurement: ["Procurement", "Buying the materials and supplies camp needs"],
+  build: ["Build coordination", "Running the crew that puts camp up"],
+  strike: ["Strike coordination", "Running the crew that takes camp down"],
+  art: ["Art", "The installation placed out on the open playa"],
+  artcar: ["Art car", "The art car and what it needs from camp"],
+  burlesque: ["Burlesque show", "The burlesque show"],
+  bar: ["Bar", "The Bloody Mary and Old Fashioned bar"],
+  sound: ["Sound", "Speakers, cables, and the mix"],
+  "live-music": ["Live music", "The bands and the sets"],
+} as const;
+
 export const LEAD_ROLES = [
-  ["floorplan", "Floorplan"],
-  ["container", "Container shipping coordination"],
-  ["procurement", "Procurement"],
-  ["build", "Build coordination"],
-  ["strike", "Strike coordination"],
-  ["art", "Art"],
-  ["artcar", "Art car"],
-  ["burlesque", "Burlesque show"],
-  ["bar", "Bar"],
-  ["sound", "Sound"],
-  ["live-music", "Live music"],
+  ["floorplan", ...ROLE_COPY.floorplan],
+  ["container", ...ROLE_COPY.container],
+  ["procurement", ...ROLE_COPY.procurement],
+  ["build", ...ROLE_COPY.build],
+  ["strike", ...ROLE_COPY.strike],
+  ["art", ...ROLE_COPY.art],
+  ["artcar", ...ROLE_COPY.artcar],
+  ["burlesque", ...ROLE_COPY.burlesque],
+  ["bar", ...ROLE_COPY.bar],
+  ["sound", ...ROLE_COPY.sound],
+  ["live-music", ...ROLE_COPY["live-music"]],
 ] as const;
 
 export const HELP_ROLES = [
-  ["floorplan", "Floorplan"],
-  ["container", "Container shipping coordination"],
-  ["procurement", "Procurement"],
-  ["art", "Art"],
-  ["artcar", "Art car"],
-  ["burlesque", "Burlesque show"],
-  ["bar", "Bar"],
-  ["sound", "Sound"],
-  ["live-music", "Live music"],
+  ["floorplan", ...ROLE_COPY.floorplan],
+  ["container", ...ROLE_COPY.container],
+  ["procurement", ...ROLE_COPY.procurement],
+  ["art", ...ROLE_COPY.art],
+  ["artcar", ...ROLE_COPY.artcar],
+  ["burlesque", ...ROLE_COPY.burlesque],
+  ["bar", ...ROLE_COPY.bar],
+  ["sound", ...ROLE_COPY.sound],
+  ["live-music", ...ROLE_COPY["live-music"]],
 ] as const;
 
 export type LeadRole = (typeof LEAD_ROLES)[number][0];
