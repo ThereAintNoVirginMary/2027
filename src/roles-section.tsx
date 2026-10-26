@@ -20,7 +20,7 @@ function RoleLine({
       className={`flex flex-wrap items-baseline gap-x-3 rounded-lg border px-3 py-2 text-left text-sm ${active ? "border-rust bg-rust text-white" : "border-line bg-paper"}`}
     >
       <span className="font-medium">{label}</span>
-      <span className={active ? "text-white/80" : "text-muted"}>{detail}</span>
+      {detail !== "" && <span className={active ? "text-white/80" : "text-muted"}>{detail}</span>}
     </button>
   );
 }

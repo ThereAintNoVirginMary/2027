@@ -25,8 +25,8 @@ export const LEAD_ROLES = [
   ["procurement", ...ROLE_COPY.procurement],
   ["build", ...ROLE_COPY.build],
   ["strike", ...ROLE_COPY.strike],
-  ["art", ...ROLE_COPY.art],
-  ["artcar", ...ROLE_COPY.artcar],
+  ["art", "I will bring art to the playa", ""],
+  ["artcar", "I will bring an art car", ""],
   ["burlesque", ...ROLE_COPY.burlesque],
   ["bar", ...ROLE_COPY.bar],
   ["sound", ...ROLE_COPY.sound],
@@ -37,8 +37,8 @@ export const HELP_ROLES = [
   ["floorplan", ...ROLE_COPY.floorplan],
   ["container", ...ROLE_COPY.container],
   ["procurement", ...ROLE_COPY.procurement],
-  ["art", ...ROLE_COPY.art],
-  ["artcar", ...ROLE_COPY.artcar],
+  ["art", "I will help out with an art installation, and I checked with its leads.", ""],
+  ["artcar", "I will help out with an art car. I checked with the art car owner.", ""],
   ["burlesque", ...ROLE_COPY.burlesque],
   ["bar", ...ROLE_COPY.bar],
   ["sound", ...ROLE_COPY.sound],
@@ -60,7 +60,7 @@ export function isHelpRole(role: string): role is HelpRole {
 }
 
 export function leadLabel(role: string): string {
-  return LEAD_ROLES.find(([id]) => id === role)?.[1] ?? role;
+  return role in ROLE_COPY ? ROLE_COPY[role as keyof typeof ROLE_COPY][0] : role;
 }
 
 export async function saveWillingness(
