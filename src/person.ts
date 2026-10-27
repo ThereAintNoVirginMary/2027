@@ -33,9 +33,18 @@ export function emptyPerson(email: string): Person {
   };
 }
 
+function whatsappOk(value: string): boolean {
+  const number = value.trim();
+  const digits = number.replace(/\D/g, "");
+  return /^\+[1-9][\d\s-]*$/.test(number) && digits.length >= 8 && digits.length <= 15;
+}
+
 export function personError(person: Person): string | null {
   if (person.legalName.trim() === "") return "Enter your legal name.";
   if (person.whatsapp.trim() === "") return "Enter your WhatsApp number.";
+  if (!whatsappOk(person.whatsapp)) {
+    return "Start your WhatsApp number with the country code, like +41 79 000 00 00.";
+  }
   if (person.emergencyName.trim() === "") return "Enter an emergency contact.";
   if (person.emergencyPhone.trim() === "") return "Enter an emergency phone number.";
   return null;

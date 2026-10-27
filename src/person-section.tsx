@@ -68,9 +68,12 @@ export function PersonSection({
         <Field label="Email">
           <input className={inputClass} value={email} disabled />
         </Field>
-        <Field label="WhatsApp">
+        <Field label="WhatsApp number">
           <input
             className={inputClass}
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="+41 79 000 00 00"
             value={draft.whatsapp}
             onChange={(event) => {
               update({ whatsapp: event.target.value });

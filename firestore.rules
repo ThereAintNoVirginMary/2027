@@ -39,7 +39,8 @@ service cloud.firestore {
         ])
         && data.legalName is string && data.legalName.size() > 0 && data.legalName.size() <= 120
         && data.email is string
-        && data.whatsapp is string && data.whatsapp.size() > 0 && data.whatsapp.size() <= 40
+        && data.whatsapp is string
+        && data.whatsapp.matches('^\\+[1-9][0-9 \\-]{7,22}$')
         && data.emergencyName is string && data.emergencyName.size() > 0 && data.emergencyName.size() <= 120
         && data.emergencyPhone is string && data.emergencyPhone.size() > 0 && data.emergencyPhone.size() <= 40
         && data.hasTicket is bool

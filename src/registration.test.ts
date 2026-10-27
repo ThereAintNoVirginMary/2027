@@ -8,6 +8,19 @@ describe("registration checks", () => {
     expect(personError(emptyPerson("a@example.com"))).toBe("Enter your legal name.");
   });
 
+  it("requires a WhatsApp number with a country code", () => {
+    const person = emptyPerson("a@example.com");
+    person.legalName = "Aurel Gruber";
+    person.whatsapp = "079 000 00 00";
+    expect(personError(person)).toBe(
+      "Start your WhatsApp number with the country code, like +41 79 000 00 00.",
+    );
+    person.whatsapp = "+41 79 000 00 00";
+    person.emergencyName = "Sam Hale";
+    person.emergencyPhone = "+41 79 000 00 01";
+    expect(personError(person)).toBeNull();
+  });
+
   it("keeps a vehicle pass on an RV only", () => {
     expect(
       accommodationError({
