@@ -67,6 +67,13 @@ describe("camp registration rules", () => {
     );
   });
 
+  it("rejects a WhatsApp number without a country code", async () => {
+    const db = authed("user", "user@example.com").firestore();
+    await assertFails(
+      setDoc(doc(db, "people", "user"), person("user@example.com", { whatsapp: "0790000000" })),
+    );
+  });
+
   it("rejects a member appointing themselves admin", async () => {
     const db = authed("user", "user@example.com").firestore();
     await assertFails(
