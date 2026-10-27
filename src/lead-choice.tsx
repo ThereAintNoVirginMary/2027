@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { AppointedRole, LeadRole } from "./roles";
+import type { LeadRole } from "./roles";
 
 type LeadPerson = {
   uid: string;
@@ -10,16 +10,12 @@ type LeadPerson = {
 export function LeadChoice({
   role,
   label,
-  detail = "",
-  shaded = true,
   people,
   current,
   onChange,
 }: {
-  role: AppointedRole;
+  role: LeadRole;
   label: string;
-  detail?: string;
-  shaded?: boolean;
   people: readonly LeadPerson[];
   current: string;
   onChange: (uid: string) => void;
@@ -45,7 +41,6 @@ export function LeadChoice({
   return (
     <div ref={root} className="relative flex flex-col gap-1.5 text-sm font-medium text-muted">
       {label}
-      {detail !== "" && <span className="font-normal">{detail}</span>}
       <button
         type="button"
         aria-expanded={open}
@@ -71,12 +66,12 @@ export function LeadChoice({
             </button>
           </li>
           {ordered.map((person) => {
-            const volunteered = shaded && person.leadRoles.includes(role as LeadRole);
+            const volunteered = person.leadRoles.includes(role);
             return (
               <li key={person.uid}>
                 <button
                   type="button"
-                  className={`block w-full px-3 py-2 text-left text-base font-normal text-ink ${shaded ? (volunteered ? "bg-sage/20" : "bg-danger/20") : ""}`}
+                  className={`block w-full px-3 py-2 text-left text-base font-normal text-ink ${volunteered ? "bg-sage/20" : "bg-danger/20"}`}
                   onClick={() => {
                     onChange(person.uid);
                     setOpen(false);
