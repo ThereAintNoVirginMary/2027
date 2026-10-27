@@ -95,11 +95,13 @@ export function SoleRepresentative({
 
 export function ToggleRow({
   title,
+  note,
   hint,
   checked,
   onChange,
 }: {
   title: string;
+  note?: string;
   hint?: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -107,14 +109,17 @@ export function ToggleRow({
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
-        <p className="font-medium">{title}</p>
+        <p className="font-medium">
+          {title}
+          {note && <span className="font-normal"> {note}</span>}
+        </p>
         {hint && <p className="text-sm text-muted">{hint}</p>}
       </div>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
-        aria-label={title}
+        aria-label={note ? `${title} ${note}` : title}
         onClick={() => {
           onChange(!checked);
         }}
