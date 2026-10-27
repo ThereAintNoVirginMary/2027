@@ -47,14 +47,34 @@ export const LEAD_ROLES = [
 
 export const HELP_ROLES = [
   ["floorplan", ...ROLE_COPY.floorplan],
-  ["container", ...ROLE_COPY.container],
-  ["procurement", ...ROLE_COPY.procurement],
-  ["art", ...ROLE_COPY.art],
-  ["artcar", ...ROLE_COPY.artcar],
-  ["burlesque", ...ROLE_COPY.burlesque],
-  ["bar", ...ROLE_COPY.bar],
-  ["sound", ...ROLE_COPY.sound],
-  ["live-music", ...ROLE_COPY["live-music"]],
+  ["container", ROLE_COPY.container[0], "Helping move the camp container to and from the playa."],
+  [
+    "procurement",
+    ROLE_COPY.procurement[0],
+    "Helping source and buy materials, equipment, and supplies for camp.",
+  ],
+  [
+    "art",
+    ROLE_COPY.art[0],
+    "Helping with an art installation or artwork on the playa, after checking with its leads.",
+  ],
+  ["artcar", ROLE_COPY.artcar[0], "Helping with an art car, after checking with its owner."],
+  ["burlesque", ROLE_COPY.burlesque[0], "Helping produce the camp's burlesque show."],
+  [
+    "bar",
+    ROLE_COPY.bar[0],
+    "Helping with the Bloody Mary and Old Fashioned bar, including setup, supplies, and service.",
+  ],
+  [
+    "sound",
+    ROLE_COPY.sound[0],
+    "Helping with the sound system, speakers, cabling, and audio setup.",
+  ],
+  [
+    "live-music",
+    ROLE_COPY["live-music"][0],
+    "Helping with bands, performers, and live music sets.",
+  ],
 ] as const;
 
 export type LeadRole = (typeof LEAD_ROLES)[number][0];
