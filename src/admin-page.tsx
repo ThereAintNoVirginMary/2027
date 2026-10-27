@@ -5,14 +5,7 @@ import { parseAccommodation, type Accommodation } from "./accommodations";
 import { db } from "./firebase";
 import { LeadChoice } from "./lead-choice";
 import { parsePerson, type Person } from "./person";
-import {
-  CLOSED_LEADS,
-  LEAD_ROLES,
-  isAppointedRole,
-  isLeadRole,
-  leadLabel,
-  type AppointedRole,
-} from "./roles";
+import { LEAD_ROLES, isLeadRole, leadLabel, type LeadRole } from "./roles";
 import { Section } from "./ui";
 
 type RosterRow = Person & { uid: string };
@@ -20,7 +13,7 @@ type RosterRow = Person & { uid: string };
 export function AdminPage() {
   const [people, setPeople] = useState<RosterRow[]>([]);
   const [places, setPlaces] = useState<Accommodation[]>([]);
-  const [leads, setLeads] = useState<Partial<Record<AppointedRole, string>>>({});
+  const [leads, setLeads] = useState<Partial<Record<LeadRole, string>>>({});
 
   useEffect(() => {
     const unsubs = [
@@ -48,9 +41,9 @@ export function AdminPage() {
         );
       }),
       onSnapshot(collection(db, "leads"), (snap) => {
-        const next: Partial<Record<AppointedRole, string>> = {};
+        const next: Partial<Record<LeadRole, string>> = {};
         for (const item of snap.docs) {
-          if (!isAppointedRole(item.id)) continue;
+          if (!isLeadRole(item.id)) continue;
           const raw: unknown = item.data();
           const uid =
             typeof raw === "object" && raw !== null && "uid" in raw && typeof raw.uid === "string"
@@ -111,13 +104,11 @@ export function AdminPage() {
           <span className="text-danger">Red means they did not.</span>
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[...LEAD_ROLES, ...CLOSED_LEADS].map(([role, , detail]) => (
+          {LEAD_ROLES.map(([role]) => (
             <LeadChoice
               key={role}
               role={role}
               label={leadLabel(role)}
-              detail={isLeadRole(role) ? "" : detail}
-              shaded={isLeadRole(role)}
               people={people}
               current={leads[role] ?? ""}
               onChange={(uid) => {

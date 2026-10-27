@@ -16,9 +16,9 @@ service cloud.firestore {
 
     function leadRolesOk(roles) {
       return roles is list
-        && roles.size() <= 11
+        && roles.size() <= 12
         && roles.hasOnly([
-          'floorplan', 'container', 'procurement', 'build', 'strike', 'art',
+          'floorplan', 'container', 'procurement', 'utilities', 'build', 'strike', 'art',
           'artcar', 'burlesque', 'bar', 'sound', 'live-music'
         ]);
     }
