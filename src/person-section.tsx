@@ -97,7 +97,8 @@ export function PersonSection({
         </Field>
       </div>
       <ToggleRow
-        title="I have a ticket. Check this once you have the ticket."
+        title="I have a ticket."
+        note="Check this once you have the ticket."
         checked={draft.hasTicket}
         onChange={(hasTicket) => {
           update({ hasTicket });
