@@ -29,6 +29,10 @@ const ROLE_COPY = {
   ],
   sound: ["Sound", "Managing the sound system, speakers, cabling, and audio setup."],
   "live-music": ["Live music", "Coordinating bands, performers, and live music sets."],
+  utilities: [
+    "Fuel, water, and sanitation",
+    "Scheduling fuel and water delivery, and sanitation pickup for camp.",
+  ],
 } as const;
 
 export const LEAD_ROLES = [
@@ -77,14 +81,23 @@ export const HELP_ROLES = [
   ],
 ] as const;
 
+export const CLOSED_LEADS = [["utilities", ...ROLE_COPY.utilities]] as const;
+
 export type LeadRole = (typeof LEAD_ROLES)[number][0];
 export type HelpRole = (typeof HELP_ROLES)[number][0];
+export type ClosedLead = (typeof CLOSED_LEADS)[number][0];
+export type AppointedRole = LeadRole | ClosedLead;
 
 const leadIds: readonly string[] = LEAD_ROLES.map(([id]) => id);
 const helpIds: readonly string[] = HELP_ROLES.map(([id]) => id);
+const closedIds: readonly string[] = CLOSED_LEADS.map(([id]) => id);
 
 export function isLeadRole(role: string): role is LeadRole {
   return leadIds.includes(role);
+}
+
+export function isAppointedRole(role: string): role is AppointedRole {
+  return isLeadRole(role) || closedIds.includes(role);
 }
 
 export function isHelpRole(role: string): role is HelpRole {
