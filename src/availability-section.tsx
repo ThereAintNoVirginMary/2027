@@ -7,7 +7,7 @@ export function AvailabilitySection({ uid, person }: { uid: string; person: Pers
     return (
       <Section
         title="When you can be there"
-        hint="Willingness. Setup Access Passes are limited and assigned later."
+        hint="Setup Access Passes are limited and assigned later."
       >
         <Notice tone="error">Save your details first.</Notice>
       </Section>
@@ -17,11 +17,11 @@ export function AvailabilitySection({ uid, person }: { uid: string; person: Pers
   return (
     <Section
       title="When you can be there"
-      hint="Willingness. Setup Access Passes are limited and assigned later."
+      hint="Setup Access Passes are limited and assigned later."
     >
       <ToggleRow
         title="I can come early for build"
-        hint="This is not a promise of a pass."
+        hint="This is not a promise of an early pass."
         checked={person.earlyBuild}
         onChange={(earlyBuild) => {
           void saveAvailability(uid, earlyBuild, person.lateTeardown);
@@ -29,7 +29,6 @@ export function AvailabilitySection({ uid, person }: { uid: string; person: Pers
       />
       <ToggleRow
         title="I can stay late for teardown"
-        hint="Willingness, not a promise of a late pass."
         checked={person.lateTeardown}
         onChange={(lateTeardown) => {
           void saveAvailability(uid, person.earlyBuild, lateTeardown);
