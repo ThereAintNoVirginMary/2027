@@ -3,20 +3,32 @@ import { db } from "./firebase";
 import { persist } from "./save-notice";
 
 const ROLE_COPY = {
-  floorplan: ["Floorplan", "Where every place and vehicle sits on the lot"],
+  floorplan: [
+    "Floorplan",
+    "Mapping camp layout: Container, vehicle, RV, tent, fire lane and other infrastructure placement.",
+  ],
   container: [
     "Container shipping coordination",
-    "Getting the camp container to the playa and back",
+    "Coordinating transportation of the camp container to and from the playa.",
   ],
-  procurement: ["Procurement", "Buying the materials and supplies camp needs"],
-  build: ["Build coordination", "Running the crew that puts camp up"],
-  strike: ["Strike coordination", "Running the crew that takes camp down"],
-  art: ["Art", "The installation placed out on the open playa"],
-  artcar: ["Art car", "The art car and what it needs from camp"],
-  burlesque: ["Burlesque show", "The burlesque show"],
-  bar: ["Bar", "The Bloody Mary and Old Fashioned bar"],
-  sound: ["Sound", "Speakers, cables, and the mix"],
-  "live-music": ["Live music", "The bands and the sets"],
+  procurement: [
+    "Procurement",
+    "Sourcing and purchasing materials, equipment, and supplies for camp.",
+  ],
+  build: ["Build coordination", "Organizing and leading the crew responsible for camp setup."],
+  strike: [
+    "Strike coordination",
+    "Organizing and leading the crew responsible for camp teardown and cleanup.",
+  ],
+  art: ["Art", "Bringing and contributing an art installation or artwork to the playa."],
+  artcar: ["Art car", "Providing an art car for the camp or playa experience."],
+  burlesque: ["Burlesque show", "Producing and coordinating the camp's burlesque show."],
+  bar: [
+    "Bar",
+    "Coordinating the Bloody Mary and Old Fashioned bar, including setup, supplies, and service.",
+  ],
+  sound: ["Sound", "Managing the sound system, speakers, cabling, and audio setup."],
+  "live-music": ["Live music", "Coordinating bands, performers, and live music sets."],
 } as const;
 
 export const LEAD_ROLES = [
@@ -25,8 +37,8 @@ export const LEAD_ROLES = [
   ["procurement", ...ROLE_COPY.procurement],
   ["build", ...ROLE_COPY.build],
   ["strike", ...ROLE_COPY.strike],
-  ["art", "I will bring art to the playa", ""],
-  ["artcar", "I will bring an art car", ""],
+  ["art", ...ROLE_COPY.art],
+  ["artcar", ...ROLE_COPY.artcar],
   ["burlesque", ...ROLE_COPY.burlesque],
   ["bar", ...ROLE_COPY.bar],
   ["sound", ...ROLE_COPY.sound],
@@ -37,8 +49,8 @@ export const HELP_ROLES = [
   ["floorplan", ...ROLE_COPY.floorplan],
   ["container", ...ROLE_COPY.container],
   ["procurement", ...ROLE_COPY.procurement],
-  ["art", "I will help out with an art installation, and I checked with its leads.", ""],
-  ["artcar", "I will help out with an art car. I checked with the art car owner.", ""],
+  ["art", ...ROLE_COPY.art],
+  ["artcar", ...ROLE_COPY.artcar],
   ["burlesque", ...ROLE_COPY.burlesque],
   ["bar", ...ROLE_COPY.bar],
   ["sound", ...ROLE_COPY.sound],
